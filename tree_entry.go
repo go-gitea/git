@@ -103,7 +103,7 @@ func (te *TreeEntry) GetSubJumpablePathName() string {
 	if err != nil {
 		return te.name
 	}
-	entries, err := tree.ListEntries()
+	entries, _ := tree.ListEntries()
 	if len(entries) == 1 && entries[0].IsDir() {
 		name := entries[0].GetSubJumpablePathName()
 		if name != "" {
