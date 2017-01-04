@@ -107,9 +107,11 @@ func parseTag(line string, opt TagOption) (*Tag, error) {
 		return nil, nil
 	}
 
-	var err error
-	var tag Tag
-	var sig Signature
+	var (
+		err error
+		tag Tag
+		sig Signature
+	)
 	sig.When, err = time.Parse("2006-01-02 15:04:05 -0700", line[0:25])
 	if err != nil {
 		return nil, err
