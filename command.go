@@ -70,8 +70,8 @@ func (c *Command) RunInDirTimeoutPipeline(timeout time.Duration, dir string, std
 		return err
 	}
 
-	if err := cmd.Wait(); err == nil {
-		return nil
+	if err := cmd.Wait(); err != nil {
+		log("exec.Wait: %v", err)
 	}
 
 	return ctx.Err()
