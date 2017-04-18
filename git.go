@@ -24,7 +24,7 @@ var (
 	Debug = false
 	// Prefix the log prefix
 	Prefix = "[git-module] "
-	// Minimum Git version required
+	// GitVersionRequired is the minimum Git version required
 	GitVersionRequired = "1.7.10"
 )
 
