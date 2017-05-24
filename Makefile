@@ -35,6 +35,10 @@ lint:
 test:
 	for PKG in $(PACKAGES); do go test -cover -coverprofile $$GOPATH/src/$$PKG/coverage.out $$PKG || exit 1; done;
 
+.PHONY: bench
+bench:
+	go test -run=XXX -bench=. || exit 1
+
 .PHONY: build
 build:
 	go build .
