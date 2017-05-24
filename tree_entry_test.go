@@ -65,4 +65,5 @@ func benchmarkGetCommitsInfo(url string, b *testing.B) {
 
 func BenchmarkGetCommitsInfoGitea(b *testing.B)  { benchmarkGetCommitsInfo("https://github.com/go-gitea/gitea.git", b) } //5k+ commits
 func BenchmarkGetCommitsInfoMoby(b *testing.B)  { benchmarkGetCommitsInfo("https://github.com/moby/moby.git", b) } //32k+ commits
-func BenchmarkGetCommitsInfoGo(b *testing.B)  { benchmarkGetCommitsInfo("https://github.com/golang/go.git", b) } //+32k commits
+func BenchmarkGetCommitsInfoGo(b *testing.B)  { benchmarkGetCommitsInfo("https://github.com/golang/go.git", b) } //32k+ commits
+func BenchmarkGetCommitsInfoGo(b *testing.B)  { benchmarkGetCommitsInfo("https://github.com/torvalds/linux.git", b) } //677k+ commits
