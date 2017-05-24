@@ -37,7 +37,7 @@ test:
 
 .PHONY: bench
 bench:
-	go test -run=XXX -bench=. || exit 1
+	go test -run=XXXXXX -benchtime=10s -bench=. || exit 1
 
 .PHONY: build
 build:

@@ -11,7 +11,6 @@ import (
 )
 
 func setupGitRepo(url string) string {
-	
 	dir, err := ioutil.TempDir("", "gitea-bench")
 	if err != nil {
 		panic(err)
@@ -30,7 +29,8 @@ func setupGitRepo(url string) string {
 }
 
 func benchmarkGetCommitsInfo(url string, b *testing.B) {
-
+	b.StopTimer()
+	
 	// setup env
 	repoPath := setupGitRepo(url)
 	defer os.RemoveAll(repoPath)
@@ -51,6 +51,7 @@ func benchmarkGetCommitsInfo(url string, b *testing.B) {
 	}
 	entries.Sort()
 
+	b.StartTimer()
 	// run the GetCommitsInfo function b.N times
 	for n := 0; n < b.N; n++ {
 		_, err = entries.GetCommitsInfo(commit, "")
