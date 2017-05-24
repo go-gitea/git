@@ -28,6 +28,7 @@ func setupGitRepo(url string) string {
 	return dir
 }
 
+//TODO use https://blog.golang.org/subtests when removing support for Go1.6
 func benchmarkGetCommitsInfo(url string, b *testing.B) {
 	b.StopTimer()
 	
