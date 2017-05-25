@@ -10,22 +10,16 @@ import (
 	"testing"
 )
 
-func setupGitRepo(url string) string {
+func setupGitRepo(url string) (string, error) {
 	dir, err := ioutil.TempDir("", "gitea-bench")
 	if err != nil {
-		panic(err)
+		return "", err
 	}
-	/* Manual method
-	_, err = NewCommand("clone", url, dir).Run()
-	if err != nil {
-		log.Fatal(err)
-	}
-	*/
 	err = Clone(url, dir, CloneRepoOptions{})
 	if err != nil {
-		panic(err)
+		return "", err
 	}
-	return dir
+	return dir, nil
 }
 
 //TODO use https://blog.golang.org/subtests when removing support for Go1.6
@@ -33,22 +27,25 @@ func benchmarkGetCommitsInfo(url string, b *testing.B) {
 	b.StopTimer()
 	
 	// setup env
-	repoPath := setupGitRepo(url)
+	repoPath, err := setupGitRepo(url)
+	if err != nil {
+		b.Fatal(err)
+	}
 	defer os.RemoveAll(repoPath)
 
 	repo, err := OpenRepository(repoPath)
 	if err != nil {
-		panic(err)
+		b.Fatal(err)
 	}
 
 	commit, err := repo.GetBranchCommit("master")
 	if err != nil {
-		panic(err)
+		b.Fatal(err)
 	}
 
 	entries, err := commit.Tree.ListEntries()
 	if err != nil {
-		panic(err)
+		b.Fatal(err)
 	}
 	entries.Sort()
 
@@ -57,7 +54,7 @@ func benchmarkGetCommitsInfo(url string, b *testing.B) {
 	for n := 0; n < b.N; n++ {
 		_, err = entries.GetCommitsInfo(commit, "")
 		if err != nil {
-			panic(err)
+			b.Fatal(err)
 		}
 	}
 }
