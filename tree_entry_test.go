@@ -5,65 +5,58 @@
 package git
 
 import (
-	"io/ioutil"
 	"os"
+	"path/filepath"
 	"testing"
+	"time"
 )
 
-func setupGitRepo(url string) string {
-	dir, err := ioutil.TempDir("", "gitea-bench")
-	if err != nil {
-		panic(err)
+const benchmarkReposDir = "benchmark_repos/"
+
+func setupGitRepo(url string, name string) (string, error) {
+	repoDir := filepath.Join(benchmarkReposDir, name)
+	if _, err := os.Stat(repoDir); err == nil {
+		return repoDir, nil
 	}
-	/* Manual method
-	_, err = NewCommand("clone", url, dir).Run()
-	if err != nil {
-		log.Fatal(err)
-	}
-	*/
-	err = Clone(url, dir, CloneRepoOptions{Mirror: false, Bare: false, Quiet: true})
-	if err != nil {
-		panic(err)
-	}
-	return dir
+	return repoDir, Clone(url, repoDir, CloneRepoOptions{
+		Mirror:  false,
+		Bare:    false,
+		Quiet:   true,
+		Timeout: 5 * time.Minute,
+	})
 }
 
-//TODO use https://blog.golang.org/subtests when removing support for Go1.6
-func benchmarkGetCommitsInfo(url string, b *testing.B) {
-	b.StopTimer()
-	
-	// setup env
-	repoPath := setupGitRepo(url)
-	defer os.RemoveAll(repoPath)
-
-	repo, err := OpenRepository(repoPath)
-	if err != nil {
-		panic(err)
+func BenchmarkEntries_GetCommitsInfo(b *testing.B) {
+	benchmarks := []struct {
+		url  string
+		name string
+	}{
+		{url: "https://github.com/go-gitea/gitea.git", name: "gitea"},
+		{url: "https://github.com/ethantkoenig/manyfiles.git", name: "manyfiles"},
+		{url: "https://github.com/moby/moby.git", name: "moby"},
+		{url: "https://github.com/golang/go.git", name: "go"},
+		{url: "https://github.com/torvalds/linux.git", name: "linux"},
 	}
-
-	commit, err := repo.GetBranchCommit("master")
-	if err != nil {
-		panic(err)
-	}
-
-	entries, err := commit.Tree.ListEntries()
-	if err != nil {
-		panic(err)
-	}
-	entries.Sort()
-
-	b.StartTimer()
-	// run the GetCommitsInfo function b.N times
-	for n := 0; n < b.N; n++ {
-		_, err = entries.GetCommitsInfo(commit, "")
-		if err != nil {
+	for _, benchmark := range benchmarks {
+		var commit *Commit
+		var entries Entries
+		if repoPath, err := setupGitRepo(benchmark.url, benchmark.name); err != nil {
+			panic(err)
+		} else if repo, err := OpenRepository(repoPath); err != nil {
+			panic(err)
+		} else if commit, err = repo.GetBranchCommit("master"); err != nil {
+			panic(err)
+		} else if entries, err = commit.Tree.ListEntries(); err != nil {
 			panic(err)
 		}
+		entries.Sort()
+		b.Run(benchmark.name, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				_, err := entries.GetCommitsInfo(commit, "")
+				if err != nil {
+					panic(err)
+				}
+			}
+		})
 	}
 }
-
-
-func BenchmarkGetCommitsInfoGitea(b *testing.B)  { benchmarkGetCommitsInfo("https://github.com/go-gitea/gitea.git", b) } //5k+ commits
-func BenchmarkGetCommitsInfoMoby(b *testing.B)  { benchmarkGetCommitsInfo("https://github.com/moby/moby.git", b) } //32k+ commits
-func BenchmarkGetCommitsInfoGo(b *testing.B)  { benchmarkGetCommitsInfo("https://github.com/golang/go.git", b) } //32k+ commits
-func BenchmarkGetCommitsInfoGo(b *testing.B)  { benchmarkGetCommitsInfo("https://github.com/torvalds/linux.git", b) } //677k+ commits
