@@ -38,6 +38,7 @@ func BenchmarkEntries_GetCommitsInfo(b *testing.B) {
 		{url: "https://github.com/torvalds/linux.git", name: "linux"},
 	}
 	for _, benchmark := range benchmarks {
+		b.StopTimer()
 		var commit *Commit
 		var entries Entries
 		if repoPath, err := setupGitRepo(benchmark.url, benchmark.name); err != nil {
@@ -50,6 +51,7 @@ func BenchmarkEntries_GetCommitsInfo(b *testing.B) {
 			panic(err)
 		}
 		entries.Sort()
+		b.StartTimer()
 		b.Run(benchmark.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				_, err := entries.GetCommitsInfo(commit, "")
