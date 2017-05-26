@@ -1,6 +1,6 @@
 IMPORT := code.gitea.io/git
 
-PACKAGES ?= $(shell go list -e ./... | grep -v /vendor/ | grep -v /benchmark_repos/)
+PACKAGES ?= $(shell go list -e ./... | grep -v /vendor/ | grep -v /benchmark/)
 GENERATE ?= code.gitea.io/git
 
 .PHONY: all
@@ -18,7 +18,7 @@ generate:
 
 .PHONY: fmt
 fmt:
-	find . -name "*.go" -type f -not -path "./vendor/*" -not -path "./benchmark_repos/*" | xargs gofmt -s -w
+	find . -name "*.go" -type f -not -path "./vendor/*" -not -path "./benchmark/*" | xargs gofmt -s -w
 
 .PHONY: vet
 vet:

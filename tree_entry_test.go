@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-const benchmarkReposDir = "benchmark_repos/"
+const benchmarkReposDir = "benchmark/repos/"
 
 func setupGitRepo(url string, name string) (string, error) {
 	repoDir := filepath.Join(benchmarkReposDir, name)
