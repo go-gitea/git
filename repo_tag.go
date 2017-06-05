@@ -96,6 +96,7 @@ func (repo *Repository) GetTag(name string) (*Tag, error) {
 
 // GetTagInfos returns all tag infos of the repository.
 func (repo *Repository) GetTagInfos() ([]*Tag, error) {
+	// TODO this a slow implementation, makes one git command per tag
 	stdout, err := NewCommand("tag").RunInDir(repo.Path)
 	if err != nil {
 		return nil, err
