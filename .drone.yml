@@ -23,4 +23,4 @@ pipeline:
     webhook_token: ${WEBHOOK_TOKEN}
     when:
       event: [ push, tag, pull_request ]
-      status: [ failure ]
+      status: [ changed, failure ]
