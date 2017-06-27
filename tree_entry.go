@@ -248,14 +248,27 @@ func getNextCommitInfos(state *getCommitInfoState) error {
 	if err != nil {
 		return err
 	}
+	prefixLen := len(prettyLogCommitPrefix)
 	lines := strings.Split(logOutput, "\n")
 	i := 0
 	for i < len(lines) {
-		state.nextCommit(lines[i])
+		commitID := lines[i]
+		if prefixLen > len(commitID) || commitID[0:prefixLen] != prettyLogCommitPrefix {
+			return fmt.Errorf("Expected commit ID but received: %s", commitID)
+		}
+		if prefixLen > 0 {
+			commitID = commitID[prefixLen:]
+		}
+		state.nextCommit(commitID)
 		i++
 		for ; i < len(lines); i++ {
 			entryPath := lines[i]
 			if entryPath == "" {
+				break
+			}
+			// Check if it is not next commit
+			if prefixLen < len(entryPath) && entryPath[0:prefixLen] == prettyLogCommitPrefix {
+				i--
 				break
 			}
 			if entryPath[0] == '"' {

@@ -54,7 +54,7 @@ func (repo *Repository) GetPullRequestInfo(basePath, baseBranch, headBranch stri
 	if err != nil {
 		return nil, err
 	}
-	prInfo.Commits, err = repo.parsePrettyFormatLogToList(logs)
+	prInfo.Commits, err = repo.parsePrettyFormatLogToList(prettyLogCommitPrefix, logs)
 	if err != nil {
 		return nil, fmt.Errorf("parsePrettyFormatLogToList: %v", err)
 	}
