@@ -26,18 +26,25 @@ type Repository struct {
 	tagCache    *ObjectCache
 }
 
-const prettyLogFormat = `--pretty=format:%H`
+const prettyLogCommitPrefix = `commit:`
+const prettyLogFormat = `--pretty=format:` + prettyLogCommitPrefix + `%H`
 
-func (repo *Repository) parsePrettyFormatLogToList(logs []byte) (*list.List, error) {
+func (repo *Repository) parsePrettyFormatLogToList(prefix string, logs []byte) (*list.List, error) {
 	l := list.New()
 	if len(logs) == 0 {
 		return l, nil
 	}
+	prefixLen := len(prefix)
 
 	parts := bytes.Split(logs, []byte{'\n'})
 
-	for _, commitID := range parts {
-		commit, err := repo.GetCommit(string(commitID))
+	for _, line := range parts {
+		commitID := string(line)
+		// Skip lines that does not contain Commit ID
+		if prefixLen > len(commitID) || prefix != commitID[0:prefixLen] {
+			continue
+		}
+		commit, err := repo.GetCommit(commitID[prefixLen:])
 		if err != nil {
 			return nil, err
 		}

@@ -167,6 +167,10 @@ func (repo *Repository) getCommitByPathWithID(id SHA1, relpath string) (*Commit,
 	if err != nil {
 		return nil, err
 	}
+	lenPrefix := len(prettyLogCommitPrefix)
+	if lenPrefix < len(stdout) && stdout[0:lenPrefix] == prettyLogCommitPrefix {
+		stdout = stdout[lenPrefix:]
+	}
 
 	id, err = NewIDFromString(stdout)
 	if err != nil {
@@ -183,7 +187,7 @@ func (repo *Repository) GetCommitByPath(relpath string) (*Commit, error) {
 		return nil, err
 	}
 
-	commits, err := repo.parsePrettyFormatLogToList(stdout)
+	commits, err := repo.parsePrettyFormatLogToList(prettyLogCommitPrefix, stdout)
 	if err != nil {
 		return nil, err
 	}
@@ -199,7 +203,7 @@ func (repo *Repository) commitsByRange(id SHA1, page int) (*list.List, error) {
 	if err != nil {
 		return nil, err
 	}
-	return repo.parsePrettyFormatLogToList(stdout)
+	return repo.parsePrettyFormatLogToList(prettyLogCommitPrefix, stdout)
 }
 
 func (repo *Repository) searchCommits(id SHA1, keyword string, all bool) (*list.List, error) {
@@ -211,7 +215,7 @@ func (repo *Repository) searchCommits(id SHA1, keyword string, all bool) (*list.
 	if err != nil {
 		return nil, err
 	}
-	return repo.parsePrettyFormatLogToList(stdout)
+	return repo.parsePrettyFormatLogToList(prettyLogCommitPrefix, stdout)
 }
 
 func (repo *Repository) getFilesChanged(id1 string, id2 string) ([]string, error) {
@@ -234,7 +238,7 @@ func (repo *Repository) CommitsByFileAndRange(revision, file string, page int) (
 	if err != nil {
 		return nil, err
 	}
-	return repo.parsePrettyFormatLogToList(stdout)
+	return repo.parsePrettyFormatLogToList(prettyLogCommitPrefix, stdout)
 }
 
 // FilesCountBetween return the number of files changed between two commits
@@ -253,7 +257,7 @@ func (repo *Repository) CommitsBetween(last *Commit, before *Commit) (*list.List
 		if err != nil {
 			return nil, err
 		}
-		return repo.parsePrettyFormatLogToList(bytes.TrimSpace(stdout))
+		return repo.parsePrettyFormatLogToList("", bytes.TrimSpace(stdout))
 	}
 
 	// Fallback to stupid solution, which iterates all commits of the repository
