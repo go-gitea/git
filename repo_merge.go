@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-//Merge creates a new commit for the repo which is composed of a three-way merge of the branches.
+//MergeCommit creates a new commit for the repo which is composed of a three-way merge of the branches.
 func (repo *Repository) MergeCommit(sig *Signature, baseID, headID, message string) (string, error) {
 
 	//
