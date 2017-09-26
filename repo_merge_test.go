@@ -27,6 +27,7 @@ func TestRepoMerge(t *testing.T) {
 
 		//Output
 		mergeCommitID string
+		errorString   string
 	}{
 		{
 			repoName:      "repo-ff",
@@ -35,6 +36,17 @@ func TestRepoMerge(t *testing.T) {
 			author:        &Signature{Email: "Alice@example.com", Name: "Alice", When: time.Date(2017, time.September, 20, 0, 0, 0, 0, time.UTC)},
 			committer:     &Signature{Email: "Alice@example.com", Name: "Alice", When: time.Date(2017, time.September, 25, 0, 0, 0, 0, time.UTC)},
 			message:       "Merge branch 'bye-world' of repo-ff",
+			errorString:   "",
+			mergeCommitID: "b4410a0fa606b697c892a3de8bbced3c005422a0",
+		},
+		{
+			repoName:      "repo-conflict",
+			oursBranch:    "bye-world",
+			theirsBranch:  "greetings",
+			author:        &Signature{Email: "Alice@example.com", Name: "Alice", When: time.Date(2017, time.September, 20, 0, 0, 0, 0, time.UTC)},
+			committer:     &Signature{Email: "Alice@example.com", Name: "Alice", When: time.Date(2017, time.September, 25, 0, 0, 0, 0, time.UTC)},
+			message:       "Merge branch 'greetings' of repo-conflict",
+			errorString:   "exit status 128 - ERROR: content conflict in README.md\nfatal: merge program failed\n",
 			mergeCommitID: "b4410a0fa606b697c892a3de8bbced3c005422a0",
 		},
 	} {
@@ -56,16 +68,18 @@ func TestRepoMerge(t *testing.T) {
 		}
 
 		if err := repo.MergeBranch(x.committer, x.oursBranch, x.theirsBranch, x.message); err != nil {
-			t.Fatal(err)
-		}
+			if err.Error() != x.errorString {
+				t.Fatal(err)
+			}
+		} else {
+			oursID, err := repo.GetBranchCommitID(x.oursBranch)
+			if err != nil {
+				t.Fatal(err)
+			}
 
-		oursID, err := repo.GetBranchCommitID(x.oursBranch)
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		if oursID != x.mergeCommitID {
-			t.Fatalf("Not matched. Actual:%s Expected:%s", oursID, x.mergeCommitID)
+			if oursID != x.mergeCommitID {
+				t.Fatalf("Not matched. Actual:%s Expected:%s", oursID, x.mergeCommitID)
+			}
 		}
 	}
 }
