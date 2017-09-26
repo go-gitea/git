@@ -47,7 +47,7 @@ func TestRepoMerge(t *testing.T) {
 			committer:     &Signature{Email: "Alice@example.com", Name: "Alice", When: time.Date(2017, time.September, 25, 0, 0, 0, 0, time.UTC)},
 			message:       "Merge branch 'greetings' of repo-conflict",
 			errorString:   "exit status 128 - ERROR: content conflict in README.md\nfatal: merge program failed\n",
-			mergeCommitID: "b4410a0fa606b697c892a3de8bbced3c005422a0",
+			mergeCommitID: "",
 		},
 	} {
 		from := filepath.Join("testdata", x.repoName)
