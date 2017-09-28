@@ -56,7 +56,7 @@ function test_merge {
 		git merge -q $options $theirs
 		echo "$name -> `git rev-list --max-count=1 HEAD`"
 	cd ..
-	#rm -rf $cloned
+	rm -rf $cloned
 }
 
 function sync_and_cleanup {
@@ -67,8 +67,30 @@ function sync_and_cleanup {
 }
 
 function repo-ff {
-	repo_name="repo-ff"
-	action="sed -i 's/Hello/Bye/' README.md"
+	local readonly repo_name="ff"
+	local readonly action="sed -i 's/Hello/Bye/' README.md"
+	create_repo $repo_name "README.md" "Hello, World" "Initial Commit"
+	create_branch_and_modify $repo_name "master" "test-branch" "$action"
+	sync_and_cleanup $repo_name
+	test_merge $repo_name "master" "test-branch" "--no-edit --no-ff"
+}
+
+function repo-conflict {
+	local readonly repo_name="conflict"
+	local readonly action1="sed -i 's/Hello/Bye/' README.md"
+	local readonly action2="sed -i 's/Hello/Greetings/' README.md"
+	create_repo $repo_name "README.md" "Hello, World" "Initial Commit"
+	create_branch_and_modify $repo_name "master" "test-branch1" "$action1"
+	create_branch_and_modify $repo_name "master" "test-branch2" "$action2"
+	sync_and_cleanup $repo_name
+	set +e
+	test_merge $repo_name "test-branch1" "test-branch2" "--no-edit --no-ff"
+	set -e
+}
+
+function repo-adding {
+	local readonly repo_name="adding"
+	local readonly action="sed -i 's/Hello/Bye/' README.md && echo 0123456789 > a.txt"
 	create_repo $repo_name "README.md" "Hello, World" "Initial Commit"
 	create_branch_and_modify $repo_name "master" "test-branch" "$action"
 	sync_and_cleanup $repo_name
@@ -76,7 +98,13 @@ function repo-ff {
 }
 
 function main() {
-	repo-ff
+	rm -rf generated
+	mkdir generated
+	cd generated
+		repo-ff
+		repo-conflict
+		repo-adding
+	cd ..
 }
 
 main
