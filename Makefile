@@ -33,6 +33,7 @@ lint:
 
 .PHONY: test
 test:
+	cd testdata && ./generate.sh && cd ..
 	for PKG in $(PACKAGES); do go test -cover -coverprofile $$GOPATH/src/$$PKG/coverage.out $$PKG || exit 1; done;
 
 .PHONY: bench

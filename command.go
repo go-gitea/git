@@ -23,6 +23,7 @@ var (
 type Command struct {
 	name string
 	args []string
+	env  []string
 }
 
 func (c *Command) String() string {
@@ -32,12 +33,18 @@ func (c *Command) String() string {
 	return fmt.Sprintf("%s %s", c.name, strings.Join(c.args, " "))
 }
 
-// NewCommand creates and returns a new Git Command based on given command and arguments.
-func NewCommand(args ...string) *Command {
+// NewEnvCommand creates and returns a new Git Command based on given command, environment variables and arguments.
+func NewEnvCommand(env []string, args ...string) *Command {
 	return &Command{
 		name: "git",
+		env:  env,
 		args: append(GlobalCommandArgs, args...),
 	}
+}
+
+// NewCommand creates and returns a new Git Command based on given command and arguments.
+func NewCommand(args ...string) *Command {
+	return NewEnvCommand(nil, args...)
 }
 
 // AddArguments adds new argument(s) to the command.
@@ -63,6 +70,7 @@ func (c *Command) RunInDirTimeoutPipeline(timeout time.Duration, dir string, std
 	defer cancel()
 
 	cmd := exec.CommandContext(ctx, c.name, c.args...)
+	cmd.Env = c.env
 	cmd.Dir = dir
 	cmd.Stdout = stdout
 	cmd.Stderr = stderr
