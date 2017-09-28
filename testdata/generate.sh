@@ -66,7 +66,7 @@ function sync_and_cleanup {
 	rm -rf ./$name
 }
 
-function repo-ff {
+function gen-repo-ff {
 	local readonly repo_name="ff"
 	local readonly action="sed -i 's/Hello/Bye/' README.md"
 	create_repo $repo_name "README.md" "Hello, World" "Initial Commit"
@@ -75,7 +75,7 @@ function repo-ff {
 	test_merge $repo_name "master" "test-branch" "--no-edit --no-ff"
 }
 
-function repo-conflict {
+function gen-repo-conflict {
 	local readonly repo_name="conflict"
 	local readonly action1="sed -i 's/Hello/Bye/' README.md"
 	local readonly action2="sed -i 's/Hello/Greetings/' README.md"
@@ -88,7 +88,7 @@ function repo-conflict {
 	set -e
 }
 
-function repo-adding {
+function gen-repo-adding {
 	local readonly repo_name="adding"
 	local readonly action="sed -i 's/Hello/Bye/' README.md && echo 0123456789 > a.txt"
 	create_repo $repo_name "README.md" "Hello, World" "Initial Commit"
@@ -101,9 +101,9 @@ function main() {
 	rm -rf generated
 	mkdir generated
 	cd generated
-		repo-ff
-		repo-conflict
-		repo-adding
+		gen-repo-ff
+		gen-repo-conflict
+		gen-repo-adding
 	cd ..
 }
 
