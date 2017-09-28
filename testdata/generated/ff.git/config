@@ -1,0 +1,8 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = true
+[remote "origin"]
+	url = /home/mura/devel/go/src/code.gitea.io/git/testdata/generated/ff
+	fetch = +refs/*:refs/*
+	mirror = true
