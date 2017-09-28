@@ -37,7 +37,7 @@ func TestRepoMerge(t *testing.T) {
 			committer:     &Signature{Email: "Alice@example.com", Name: "Alice", When: time.Date(2017, time.September, 25, 0, 0, 0, 0, time.UTC)},
 			message:       "Merge branch 'bye-world' of repo-ff",
 			errorString:   "",
-			mergeCommitID: "b4410a0fa606b697c892a3de8bbced3c005422a0",
+			mergeCommitID: "0896984c31681a77c7660bacd56de91c15389e88",
 		},
 		{
 			repoName:      "repo-conflict",
