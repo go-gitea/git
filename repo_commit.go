@@ -292,7 +292,7 @@ func (repo *Repository) commitsBefore(id SHA1, limit int) (*list.List, error) {
 	commits := list.New()
 	for logEntry := formattedLog.Front(); logEntry != nil; logEntry = logEntry.Next() {
 		commit := logEntry.Value.(*Commit)
-		branches, err := repo.getBranches(commit)
+		branches, err := repo.getBranches(commit, 2)
 		if err != nil {
 			return nil, err
 		}
@@ -315,8 +315,8 @@ func (repo *Repository) getCommitsBeforeLimit(id SHA1, num int) (*list.List, err
 	return repo.commitsBefore(id, num)
 }
 
-func (repo *Repository) getBranches(commit *Commit) ([]string, error) {
-	stdout, err := NewCommand("for-each-ref", "--format=%(refname)", "--contains", commit.ID.String(), BranchPrefix).RunInDir(repo.Path)
+func (repo *Repository) getBranches(commit *Commit, limit int) ([]string, error) {
+	stdout, err := NewCommand("for-each-ref", "--count="+ strconv.Itoa(limit), "--format=%(refname)", "--contains", commit.ID.String(), BranchPrefix).RunInDir(repo.Path)
 	if err != nil {
 		return nil, err
 	}
