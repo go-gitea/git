@@ -14,6 +14,7 @@ pipeline:
     image: webhippie/golang:edge
     pull: true
     commands:
+      - git update-ref refs/heads/test HEAD
       - make clean
       - make vet
       - make lint
