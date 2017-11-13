@@ -18,6 +18,22 @@ pipeline:
       - make clean
       - make vet
       - make lint
+      - git --version
+      - make test
+      - apk add --update autoconf &&
+        apk add --update zlib-dev &&
+        mkdir build &&
+        curl -sL "https://github.com/git/git/archive/v1.7.2.tar.gz" -o git.tar.gz &&
+        tar -C build -xzf git.tar.gz &&
+        cd build/git-1.7.2 &&
+        autoconf &&
+        ./configure --without-tcltk --prefix=/usr/local &&
+        make install NO_PERL=please &&
+        cd ../.. &&
+        rm -rf build &&
+        rm git.tar.gz
+      - hash -r
+      - git --version
       - make test
       - make build
 
