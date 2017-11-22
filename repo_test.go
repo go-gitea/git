@@ -3,7 +3,6 @@ package git
 import "testing"
 
 func TestGetRefs(t *testing.T) {
-
 	expected := []string{"v1.0.0", "v1.2.1", "v2.0.0", "v3.0.0", "v3.1.0", "v3.10.1"}
 
 	for _, p := range []string{
@@ -21,12 +20,12 @@ func TestGetRefs(t *testing.T) {
 		}
 
 		if len(expected) != len(tags) {
-			t.Fatalf("wrong number of tags returned - expected [%d] got [%d]", len(expected), len(tags))
+			t.Fatalf("[%s] wrong number of tags returned - expected [%d] got [%d]", p, len(expected), len(tags))
 		}
 
 		for i, v := range tags {
 			if expected[i] != v {
-				t.Fatalf("incorrect tag - expected [%s] got [%s]", expected[i], v)
+				t.Fatalf("[%s] incorrect tag - expected [%s] got [%s]", p, expected[i], v)
 			}
 		}
 	}
