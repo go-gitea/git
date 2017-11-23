@@ -248,7 +248,9 @@ func (state *getCommitsInfoState) processGitLogOutput(scanner *bufio.Scanner) er
 			continue
 		}
 		if line[0] >= 'A' && line[0] <= 'X' { // a file was changed by the current commit
-			tabIndex := strings.IndexByte(line, '\t')
+			// look for the last tab, since for copies (C) and renames (R) two
+			// filenames are printed: src, then dest
+			tabIndex := strings.LastIndexByte(line, '\t')
 			if tabIndex < 1 {
 				return fmt.Errorf("misformatted line: %s", line)
 			}
