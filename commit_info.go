@@ -52,6 +52,8 @@ func (state *getCommitsInfoState) numRemainingEntries() int {
 	return numRemaining
 }
 
+// getTargetEntryPath Returns the next path for a targeted-searching thread to
+// search for, or returns the empty string if nothing left to search for
 func (state *getCommitsInfoState) getTargetedEntryPath() string {
 	var targetedEntryPath string
 	state.lock.Lock()
