@@ -18,23 +18,23 @@ pipeline:
       - make clean
       - make vet
       - make lint
-      - git --version
-      - make test
-      - apk add --update autoconf &&
-        apk add --update zlib-dev &&
+      # Test with latest git version
+      - git --version && make test
+      # Test with git version 1.7.2
+      - apk add --update autoconf zlib-dev > /dev/null &&
         mkdir build &&
         curl -sL "https://github.com/git/git/archive/v1.7.2.tar.gz" -o git.tar.gz &&
         tar -C build -xzf git.tar.gz &&
         cd build/git-1.7.2 &&
-        autoconf &&
-        ./configure --without-tcltk --prefix=/usr/local &&
-        make install NO_PERL=please &&
+        { autoconf 2> err || cat err; } &&
+        ./configure --without-tcltk --prefix=/usr/local > /dev/null &&
+        { make install NO_PERL=please > /dev/null 2> err || cat err; } &&
         cd ../.. &&
-        rm -rf build &&
-        rm git.tar.gz
-      - hash -r
-      - git --version
-      - make test
+        rm -rf build git.tar.gz &&
+        hash -r &&
+        git --version &&
+        make test
+      # Test a build (is this really needed?)
       - make build
 
   # coverage:
