@@ -26,9 +26,9 @@ pipeline:
         curl -sL "https://github.com/git/git/archive/v1.7.2.tar.gz" -o git.tar.gz &&
         tar -C build -xzf git.tar.gz &&
         cd build/git-1.7.2 &&
-        { autoconf 2> err || cat err; } &&
+        { autoconf 2> err || { cat err && false; } } &&
         ./configure --without-tcltk --prefix=/usr/local > /dev/null &&
-        { make install NO_PERL=please > /dev/null 2> err || cat err; } &&
+        { make install NO_PERL=please > /dev/null 2> err || { cat err && false; } } &&
         cd ../.. &&
         rm -rf build git.tar.gz &&
         hash -r &&
