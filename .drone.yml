@@ -28,6 +28,7 @@ pipeline:
     image: docker.kbt.io/gitea-git-ci:1.7
     pull: true
     commands:
+      - git update-ref refs/heads/test HEAD
       - PATH=/opt/git-1.7.2/bin git --version && make test
 
   # coverage:
