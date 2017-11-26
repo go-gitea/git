@@ -10,24 +10,24 @@ clone:
     tags: true
 
 pipeline:
+  test-general:
+    image: webhippie/golang:edge
+    pull: true
+    commands:
+      - make clean
+      - make vet
+      - make lint
+      - make build
   testing-git-latest:
     image: webhippie/golang:edge
     pull: true
     commands:
       - git update-ref refs/heads/test HEAD
-      - make clean
-      - make vet
-      - make lint
       - git --version && make test
-      - make build
   testing-git-1.7:
     image: docker.kbt.io/gitea-git-ci:1.7
     pull: true
     commands:
-      - git update-ref refs/heads/test HEAD
-      - make clean
-      - make vet
-      - make lint
       - PATH=/opt/git-1.7.2/bin git --version && make test
 
   # coverage:
