@@ -6,8 +6,6 @@ package git
 
 import (
 	"strings"
-
-	"github.com/mcuadros/go-version"
 )
 
 // TagPrefix tags prefix path on the repository
@@ -130,28 +128,5 @@ func (repo *Repository) GetTagInfos() ([]*Tag, error) {
 
 // GetTags returns all tags of the repository.
 func (repo *Repository) GetTags() ([]string, error) {
-	cmd := NewCommand("tag", "-l")
-	if version.Compare(gitVersion, "2.0.0", ">=") {
-		cmd.AddArguments("--sort=-v:refname")
-	}
-
-	stdout, err := cmd.RunInDir(repo.Path)
-	if err != nil {
-		return nil, err
-	}
-
-	tags := strings.Split(stdout, "\n")
-	tags = tags[:len(tags)-1]
-
-	if version.Compare(gitVersion, "2.0.0", "<") {
-		version.Sort(tags)
-
-		// Reverse order
-		for i := 0; i < len(tags)/2; i++ {
-			j := len(tags) - i - 1
-			tags[i], tags[j] = tags[j], tags[i]
-		}
-	}
-
-	return tags, nil
+	return DefaultStorage.GetTags(repo.Path)
 }
