@@ -47,9 +47,8 @@ type getCommitsInfoState struct {
 
 func (state *getCommitsInfoState) numRemainingEntries() int {
 	state.lock.Lock()
-	numRemaining := len(state.entries) - len(state.commits)
-	state.lock.Unlock()
-	return numRemaining
+	defer state.lock.Unlock()
+	return len(state.entries) - len(state.commits)
 }
 
 // getTargetEntryPath Returns the next path for a targeted-searching thread to
@@ -57,6 +56,7 @@ func (state *getCommitsInfoState) numRemainingEntries() int {
 func (state *getCommitsInfoState) getTargetedEntryPath() string {
 	var targetedEntryPath string
 	state.lock.Lock()
+	defer state.lock.Unlock()
 	for _, entry := range state.entries {
 		entryPath := path.Join(state.treePath, entry.Name())
 		if _, ok := state.commits[entryPath]; ok {
@@ -68,7 +68,6 @@ func (state *getCommitsInfoState) getTargetedEntryPath() string {
 		state.targetedPaths[entryPath] = struct{}{}
 		break
 	}
-	state.lock.Unlock()
 	return targetedEntryPath
 }
 
@@ -179,11 +178,11 @@ func (state *getCommitsInfoState) update(entryPath string, commit *Commit) bool 
 
 	var updated bool
 	state.lock.Lock()
+	defer state.lock.Unlock()
 	if _, ok := state.commits[entryPath]; !ok {
 		state.commits[entryPath] = commit
 		updated = true
 	}
-	state.lock.Unlock()
 	return updated
 }
 
