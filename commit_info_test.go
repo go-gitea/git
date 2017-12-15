@@ -49,7 +49,7 @@ func BenchmarkEntries_GetCommitsInfo(b *testing.B) {
 		b.ResetTimer()
 		b.Run(benchmark.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				_, err := entries.GetCommitsInfo(commit, "")
+				_, err := entries.GetCommitsInfo(commit, "master", "")
 				if err != nil {
 					b.Fatal(err)
 				}
