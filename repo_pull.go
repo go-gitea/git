@@ -75,6 +75,6 @@ func (repo *Repository) GetPatch(base, head string) ([]byte, error) {
 }
 
 // GetFormatPatch generates and returns format-patch data between given revisions.
-func (repo *Repository) GetFormatPatch(base, head string) (string, error) {
-	return NewCommand("format-patch", "--stdout", base + "..." + head).RunInDir(repo.Path)
+func (repo *Repository) GetFormatPatch(base, head string) ([]byte, error) {
+	return NewCommand("format-patch", "--binary", "--stdout", base + "..." + head).RunInDirBytes(repo.Path)
 }
