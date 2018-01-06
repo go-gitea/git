@@ -18,7 +18,7 @@ var (
 	// GlobalCommandArgs global command args for external package setting
 	GlobalCommandArgs []string
 
-	// Default command execution timeout duration
+	// DefaultCommandExecutionTimeout default command execution timeout duration
 	DefaultCommandExecutionTimeout = 60 * time.Second
 )
 
