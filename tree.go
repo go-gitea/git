@@ -67,13 +67,6 @@ func (t *Tree) ListEntries() (Entries, error) {
 	if err != nil {
 		return nil, err
 	}
-	t.entries, err = ParseTreeEntries(stdout)
-	if err != nil {
-		return nil, err
-	}
-	for _, entry := range t.entries {
-		entry.ptree = t
-	}
-	t.entriesParsed = true
+	t.entries, err = parseTreeEntries(stdout, t)
 	return t.entries, err
 }

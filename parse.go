@@ -12,10 +12,15 @@ import (
 
 // ParseTreeEntries parses the output of a `git ls-tree` command.
 func ParseTreeEntries(data []byte) ([]*TreeEntry, error) {
+	return parseTreeEntries(data, nil)
+}
+
+func parseTreeEntries(data []byte, ptree *Tree) ([]*TreeEntry, error) {
 	entries := make([]*TreeEntry, 0, 10)
 	for pos := 0; pos < len(data); {
 		// expect line to be of the form "<mode> <type> <sha>\t<filename>"
 		entry := new(TreeEntry)
+		entry.ptree = ptree
 		if pos+6 > len(data) {
 			return nil, fmt.Errorf("Invalid ls-tree output: %s", string(data))
 		}
