@@ -13,9 +13,7 @@ import (
 // ParseTreeEntries parses the output of a `git ls-tree` command.
 func ParseTreeEntries(data []byte) ([]*TreeEntry, error) {
 	entries := make([]*TreeEntry, 0, 10)
-	l := len(data)
-	pos := 0
-	for pos < l {
+	for pos := 0; pos < len(data); {
 		// expect line to be of the form "<mode> <type> <sha>\t<filename>"
 		entry := new(TreeEntry)
 		if pos+6 > len(data) {
@@ -47,18 +45,18 @@ func ParseTreeEntries(data []byte) ([]*TreeEntry, error) {
 		}
 
 		if pos+40 > len(data) {
-			return nil, fmt.Errorf("Truncated ls-tree output: %s", string(data))
+			return nil, fmt.Errorf("Invalid ls-tree output: %s", string(data))
 		}
 		id, err := NewIDFromString(string(data[pos : pos+40]))
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Invalid ls-tree output: %v", err)
 		}
 		entry.ID = id
 		pos += 41 // skip over sha and trailing space
 
 		end := pos + bytes.IndexByte(data[pos:], '\n')
 		if end < pos {
-			return nil, fmt.Errorf("Truncated ls-tree output: %s", string(data))
+			return nil, fmt.Errorf("Invalid ls-tree output: %s", string(data))
 		}
 
 		// In case entry name is surrounded by double quotes(it happens only in git-shell).
