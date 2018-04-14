@@ -125,6 +125,9 @@ func (repo *Repository) GetCommit(commitID string) (*Commit, error) {
 		var err error
 		commitID, err = NewCommand("rev-parse", commitID).RunInDir(repo.Path)
 		if err != nil {
+			if strings.Contains(err.Error(), "fatal: ambiguous argument") {
+				return nil, ErrNotExist{commitID, ""}
+			}
 			return nil, err
 		}
 	}
