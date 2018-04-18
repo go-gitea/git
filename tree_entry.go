@@ -124,9 +124,8 @@ func (te *TreeEntry) FollowLink() (*TreeEntry, error) {
 	if err != nil {
 		if IsErrNotExist(err) {
 			return nil, ErrBadLink{te.Name(), "broken link"}
-		} else {
-			return nil, err
 		}
+		return nil, err
 	}
 	return target, nil
 }
