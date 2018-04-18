@@ -91,7 +91,7 @@ func (te *TreeEntry) Blob() *Blob {
 	}
 }
 
-// FollowLink return the entry pointed to by a symlink
+// FollowLink returns the entry pointed to by a symlink
 func (te *TreeEntry) FollowLink() (*TreeEntry, error) {
 	if !te.IsLink() {
 		return nil, ErrBadLink{te.Name(), "not a symlink"}
