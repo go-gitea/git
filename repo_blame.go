@@ -12,7 +12,7 @@ func (repo *Repository) FileBlame(revision, path, file string) ([]byte, error) {
 }
 
 // LineBlame returns the latest commit at the given line
-func (repo *Repository) LineBlame(revision, path, file string, line int) (*Commit, error) {
+func (repo *Repository) LineBlame(revision, path, file string, line uint) (*Commit, error) {
 	res, err := NewCommand("blame", fmt.Sprintf("-L %d,%d", line, line), "-p", revision, file).RunInDir(path)
 	if err != nil {
 		return nil, err
