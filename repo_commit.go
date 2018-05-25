@@ -9,6 +9,7 @@ import (
 	"container/list"
 	"strconv"
 	"strings"
+
 	"github.com/mcuadros/go-version"
 )
 
@@ -275,7 +276,7 @@ func (repo *Repository) CommitsCountBetween(start, end string) (int64, error) {
 func (repo *Repository) commitsBefore(id SHA1, limit int) (*list.List, error) {
 	cmd := NewCommand("log")
 	if limit > 0 {
-		cmd.AddArguments("-"+ strconv.Itoa(limit), prettyLogFormat, id.String())
+		cmd.AddArguments("-"+strconv.Itoa(limit), prettyLogFormat, id.String())
 	} else {
 		cmd.AddArguments(prettyLogFormat, id.String())
 	}
@@ -318,7 +319,7 @@ func (repo *Repository) getCommitsBeforeLimit(id SHA1, num int) (*list.List, err
 
 func (repo *Repository) getBranches(commit *Commit, limit int) ([]string, error) {
 	if version.Compare(gitVersion, "2.7.0", ">=") {
-		stdout, err := NewCommand("for-each-ref", "--count="+ strconv.Itoa(limit), "--format=%(refname)", "--contains", commit.ID.String(), BranchPrefix).RunInDir(repo.Path)
+		stdout, err := NewCommand("for-each-ref", "--count="+strconv.Itoa(limit), "--format=%(refname)", "--contains", commit.ID.String(), BranchPrefix).RunInDir(repo.Path)
 		if err != nil {
 			return nil, err
 		}
@@ -342,7 +343,7 @@ func (repo *Repository) getBranches(commit *Commit, limit int) ([]string, error)
 	if len(refs) > limit {
 		max = limit
 	} else {
-		max = len(refs)-1
+		max = len(refs) - 1
 	}
 
 	branches := make([]string, max)
