@@ -319,16 +319,12 @@ func (repo *Repository) getCommitsBeforeLimit(id SHA1, num int) (*list.List, err
 
 func (repo *Repository) getBranches(commit *Commit, limit int) ([]string, error) {
 	if version.Compare(gitVersion, "2.7.0", ">=") {
-		stdout, err := NewCommand("for-each-ref", "--count="+strconv.Itoa(limit), "--format=%(refname)", "--contains", commit.ID.String(), BranchPrefix).RunInDir(repo.Path)
+		stdout, err := NewCommand("for-each-ref", "--count="+strconv.Itoa(limit), "--format=%(refname:strip=2)", "--contains", commit.ID.String(), BranchPrefix).RunInDir(repo.Path)
 		if err != nil {
 			return nil, err
 		}
 
-		refs := strings.Split(stdout, "\n")
-		branches := make([]string, len(refs)-1)
-		for i, ref := range refs[:len(refs)-1] {
-			branches[i] = strings.TrimPrefix(ref, BranchPrefix)
-		}
+		branches := strings.Fields(stdout)
 		return branches, nil
 	}
 
