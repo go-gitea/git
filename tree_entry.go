@@ -50,6 +50,7 @@ func (te *TreeEntry) Name() string {
 	return te.name
 }
 
+// Mode returns the mode of the entry
 func (te *TreeEntry) Mode() EntryMode {
 	return te.mode
 }
