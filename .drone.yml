@@ -38,7 +38,6 @@ pipeline:
       - coverage.out
     when:
       event: [ push, pull_request ]
-      branch: [ master ]
 
   discord:
     image: appleboy/drone-discord:1.0.0
