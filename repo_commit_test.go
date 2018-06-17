@@ -37,9 +37,9 @@ func TestRepository_GetBranches(t *testing.T) {
 }
 
 func TestGetTagCommitWithSignature(t *testing.T) {
-	bareRepo1Path := filepath.Join(testReposDir, "repo1")
+	bareRepo1Path := filepath.Join(testReposDir, "repo1_bare")
 	bareRepo1, err := OpenRepository(bareRepo1Path)
-	commit, err := bareRepo1.GetCommit("c405fc85867810d5193b148ed2cd1e09620e312d")
+	commit, err := bareRepo1.GetCommit("3ad28a9149a2864384548f3d17ed7f38014c9e8a")
 
 	assert.NoError(t, err)
 	assert.NotNil(t, commit)
