@@ -44,4 +44,6 @@ func TestGetTagCommitWithSignature(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, commit)
 	assert.NotNil(t, commit.Signature)
+	// test that signature is not in message
+	assert.Equal(t, "tag", commit.CommitMessage)
 }
