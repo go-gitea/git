@@ -32,3 +32,18 @@ func TestRepository_GetRefs(t *testing.T) {
 		assert.Contains(t, expectedRefs, ref.Name)
 	}
 }
+
+func TestRepository_GetRefsFiltered(t *testing.T) {
+	bareRepo1Path := filepath.Join(testReposDir, "repo1_bare")
+	bareRepo1, err := OpenRepository(bareRepo1Path)
+	assert.NoError(t, err)
+
+	refs, err := bareRepo1.GetRefsFiltered(TagPrefix)
+
+	assert.NoError(t, err)
+	if assert.Len(t, refs, 1) {
+		assert.Equal(t, TagPrefix+"test", refs[0].Name)
+		assert.Equal(t, "tag", refs[0].Type)
+		assert.Equal(t, "3ad28a9149a2864384548f3d17ed7f38014c9e8a", refs[0].Object.String())
+	}
+}

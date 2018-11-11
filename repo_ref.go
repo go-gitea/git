@@ -7,10 +7,16 @@ package git
 import (
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing"
+	"strings"
 )
 
 // GetRefs returns all references of the repository.
 func (repo *Repository) GetRefs() ([]*Reference, error) {
+	return repo.GetRefsFiltered("")
+}
+
+// GetRefsFiltered returns all references of the repository that matches patterm exactly or starting with.
+func (repo *Repository) GetRefsFiltered(pattern string) ([]*Reference, error) {
 	r, err := git.PlainOpen(repo.Path)
 	if err != nil {
 		return nil, err
@@ -22,7 +28,8 @@ func (repo *Repository) GetRefs() ([]*Reference, error) {
 	}
 	refs := make([]*Reference, 0)
 	err = refsIter.ForEach(func(ref *plumbing.Reference) error {
-		if ref.Name() != plumbing.HEAD && !ref.Name().IsRemote() {
+		if ref.Name() != plumbing.HEAD && !ref.Name().IsRemote() &&
+			(pattern == "" || strings.HasPrefix(ref.Name().String(), pattern)) {
 			r := &Reference{
 				Name:   ref.Name().String(),
 				Object: SHA1(ref.Hash()),
