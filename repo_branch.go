@@ -74,11 +74,10 @@ func (repo *Repository) GetBranches() ([]string, error) {
 		return nil, err
 	}
 	branches := make([]string, 0)
-	err = branchIter.ForEach(func(branch *plumbing.Reference) error {
+	if err = branchIter.ForEach(func(branch *plumbing.Reference) error {
 		branches = append(branches, branch.Name().Short())
 		return nil
-	})
-	if err != nil {
+	}); err != nil {
 		return nil, err
 	}
 

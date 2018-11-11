@@ -28,7 +28,7 @@ func (repo *Repository) GetRefsFiltered(pattern string) ([]*Reference, error) {
 		return nil, err
 	}
 	refs := make([]*Reference, 0)
-	err = refsIter.ForEach(func(ref *plumbing.Reference) error {
+	if err = refsIter.ForEach(func(ref *plumbing.Reference) error {
 		if ref.Name() != plumbing.HEAD && !ref.Name().IsRemote() &&
 			(pattern == "" || strings.HasPrefix(ref.Name().String(), pattern)) {
 			r := &Reference{
@@ -43,8 +43,7 @@ func (repo *Repository) GetRefsFiltered(pattern string) ([]*Reference, error) {
 			refs = append(refs, r)
 		}
 		return nil
-	})
-	if err != nil {
+	}); err != nil {
 		return nil, err
 	}
 
