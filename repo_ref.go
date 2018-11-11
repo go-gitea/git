@@ -26,10 +26,11 @@ func (repo *Repository) GetRefs() ([]*Reference, error) {
 			r := &Reference{
 				Name:   ref.Name().String(),
 				Object: SHA1(ref.Hash()),
-				Type:   "commit",
+				Type:   string(ObjectCommit),
+				repo:   repo,
 			}
 			if ref.Name().IsTag() {
-				r.Type = "tag"
+				r.Type = string(ObjectTag)
 			}
 			refs = append(refs, r)
 		}
