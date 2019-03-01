@@ -20,7 +20,7 @@ func TestRepository_GetTags(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Len(t, tags, 1)
 	assert.EqualValues(t, "test", tags[0].Name)
-	assert.EqualValues(t, "3ad28a9149a2864384548f3d17ed7f38014c9e8a", tags[0].ID.String())
+	assert.EqualValues(t, "37991dec2c8e592043f47155ce4808d4580f9123", tags[0].ID.String())
 	assert.EqualValues(t, "commit", tags[0].Type)
 }
 
