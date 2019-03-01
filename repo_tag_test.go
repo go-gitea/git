@@ -23,3 +23,16 @@ func TestRepository_GetTags(t *testing.T) {
 	assert.EqualValues(t, "3ad28a9149a2864384548f3d17ed7f38014c9e8a", tags[0].ID.String())
 	assert.EqualValues(t, "commit", tags[0].Type)
 }
+
+func TestRepository_GetTag(t *testing.T) {
+	bareRepo1Path := filepath.Join(testReposDir, "repo1")
+	bareRepo1, err := OpenRepository(bareRepo1Path)
+	assert.NoError(t, err)
+
+	tag, err := bareRepo1.GetTag("test")
+	assert.NoError(t, err)
+	assert.NotNil(t, tag)
+	assert.EqualValues(t, "test", tag.Name)
+	assert.EqualValues(t, "37991dec2c8e592043f47155ce4808d4580f9123", tag.ID.String())
+	assert.EqualValues(t, "commit", tag.Type)
+}

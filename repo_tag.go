@@ -76,12 +76,12 @@ func (repo *Repository) getTag(id SHA1) (*Tag, error) {
 
 // GetTag returns a Git tag by given name.
 func (repo *Repository) GetTag(name string) (*Tag, error) {
-	stdout, err := NewCommand("show-ref", "--tags", name).RunInDir(repo.Path)
+	stdout, err := NewCommand("rev-list", "-n", "1", name).RunInDir(repo.Path)
 	if err != nil {
 		return nil, err
 	}
 
-	id, err := NewIDFromString(strings.Split(stdout, " ")[0])
+	id, err := NewIDFromString(strings.TrimSpace(stdout))
 	if err != nil {
 		return nil, err
 	}
