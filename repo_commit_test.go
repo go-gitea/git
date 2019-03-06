@@ -47,3 +47,12 @@ func TestGetTagCommitWithSignature(t *testing.T) {
 	// test that signature is not in message
 	assert.Equal(t, "tag", commit.CommitMessage)
 }
+
+func TestGetCommitWithBadCommitID(t *testing.T) {
+	bareRepo1Path := filepath.Join(testReposDir, "repo1_bare")
+	bareRepo1, err := OpenRepository(bareRepo1Path)
+	commit, err := bareRepo1.GetCommit("bad_branch")
+	assert.Nil(t, commit)
+	assert.Error(t, err)
+	assert.EqualError(t, err, "object does not exist [id: bad_branch, rel_path: ]")
+}
