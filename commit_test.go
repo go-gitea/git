@@ -11,7 +11,7 @@ import (
 )
 
 func TestCommitsCount(t *testing.T) {
-	commitsCount, _ := CommitsCount(".", "d86a90f801dbe279db095437a8c7ea42c60e8d98")
+	commitsCount, _ := CommitsCount(".", "d86a90f801dbe279db095437a8c7ea42c60e8d98", 0)
 	assert.Equal(t, int64(3), commitsCount)
 }
 
