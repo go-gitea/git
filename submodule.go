@@ -4,7 +4,10 @@
 
 package git
 
-import "strings"
+import (
+    "strings"
+    "strconv"
+)
 
 // SubModule submodule is a reference on git repository
 type SubModule struct {
@@ -57,6 +60,8 @@ func getRefURL(refURL, urlPrefix, parentPath string) string {
 	}
 
 	// sysuser@xxx:user/repo
+	// or
+	// sysuser@xxx:port/user/repo
 	i := strings.Index(url, "@")
 	j := strings.LastIndex(url, ":")
 
@@ -64,7 +69,12 @@ func getRefURL(refURL, urlPrefix, parentPath string) string {
 	if i > -1 && j > -1 && i < j {
 		// fix problem with reverse proxy works only with local server
 		if strings.Contains(urlPrefix, url[i+1:j]) {
-			return urlPrefix + url[j+1:]
+			port := strings.Index(url[j+1:], "/")
+			_, err := strconv.ParseInt(url[j+1:j+1 + port],10,16)
+			if err != nil {
+				return urlPrefix + url[j+1:]
+			}
+			return urlPrefix + url[j+1 + port+1:]
 		}
 		if strings.HasPrefix(url, "ssh://") || strings.HasPrefix(url, "git+ssh://") {
 			k := strings.Index(url[j+1:], "/")
